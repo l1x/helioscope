@@ -25,7 +25,7 @@ fn default_data_dir() -> String {
 #[argh(help_triggers("-h", "--help", "help"))]
 pub struct Argz {
     /// hostname or ip
-    #[argh(option, short = 'h', default = "default_host()")]
+    #[argh(option, short = 'l', default = "default_host()")]
     host: String,
 
     /// port
