@@ -1,3 +1,4 @@
+use argh::FromArgs;
 use serde::Deserialize;
 use std::fs;
 use sysinfo::System;
@@ -9,6 +10,15 @@ use tracing_subscriber::fmt::time::UtcTime;
 use crate::probes::sysinfo::{cpu, mem, temp};
 
 mod probes;
+
+#[derive(FromArgs, Debug)]
+#[argh(description = "A brief description of what your program does.")]
+#[argh(help_triggers("-h", "--help", "help"))]
+pub struct Argz {
+    /// whether or not to jump
+    #[argh(switch, short = 'c')]
+    collector: bool,
+}
 
 #[derive(Debug, Deserialize)]
 pub struct ProbesConfig {
@@ -49,11 +59,21 @@ fn main() {
     ));
 
     tracing_subscriber::fmt()
-        .with_max_level(tracing::Level::INFO)
+        .with_env_filter(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info")),
+        )
         .with_timer(timer)
         .init();
 
     info!("Starting helioscope");
+
+    let argz: Argz = argh::from_env();
+    if argz.collector {
+        info!("Starting collector mode")
+    }
+
+    debug!("Args: {:?}", argz);
 
     let config = Config::load("helioscope.toml").expect("Failed to load helioscope.toml");
 

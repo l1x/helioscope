@@ -4,12 +4,13 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+argh = "0.1.13"
 serde = { version = "1.0", features = ["derive"] }
 sysinfo = { version = "0.37" }
 time = { version = "0.3", features = ["formatting", "macros"] }
 toml = { version = "0.8" }
 tracing = { version = "0.1" }
-tracing-subscriber = { version = "0.3", features = ["fmt", "time"] }
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "time"] }
 
 [profile.bench]
 lto = "thin"
