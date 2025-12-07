@@ -25,13 +25,13 @@ pub fn probe_memory(sys: &System) {
         total_memory_bytes = total_memory,
         used_memory_bytes = used_memory,
         memory_usage_percent = format!("{:.1}", memory_usage_percent),
-        "Memory information"
+        "MEM: "
     );
 
     info!(
         total_swap_bytes = total_swap,
         used_swap_bytes = used_swap,
         swap_usage_percent = format!("{:.1}", swap_usage_percent),
-        "Swap information"
+        "SWAP: "
     );
 }

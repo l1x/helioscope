@@ -1,3 +1,10 @@
+# helioscope.toml - Configuration (static)
+# Replace it with a uuid or similar
+# that is node unique. It is used for the
+# metrics collection
+node_id = "d6f0a1c9-a494-4567-8f8d-091cc532c875"
+metrics_collector_addr = "hostname:port (ip address is ok too)"
+
 [probes.sysinfo]
 static_info = true
 cpu = true

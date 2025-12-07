@@ -12,7 +12,7 @@ pub fn probe_cpu(sys: &System) {
             core = idx,
             name = cpu.name(),
             frequency_mhz = cpu.frequency(),
-            "CPU core information"
+            "CPU: "
         );
     }
 }

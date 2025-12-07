@@ -20,7 +20,7 @@ pub fn probe_temperature() {
             temperature_celsius = component.temperature(),
             max_celsius = component.max().map(|v| format!("{:.1}", v)).as_deref(),
             critical_celsius = component.critical().map(|v| format!("{:.1}", v)).as_deref(),
-            "Temperature sensor"
+            "TEMP: "
         );
     }
 }
