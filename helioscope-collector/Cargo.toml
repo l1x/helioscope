@@ -9,6 +9,7 @@ license.workspace = true
 [dependencies]
 argh.workspace = true
 bytes = { version = "1.0" }
+helioscope-common = { path = "../helioscope-common" }
 http-body-util = { version = "0.1" }
 hyper = { version = "1.0", features = ["full"] }
 hyper-util = { version = "0.1", features = ["full"] }

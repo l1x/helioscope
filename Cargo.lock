@@ -482,6 +482,7 @@ version = "0.1.0"
 dependencies = [
  "argh",
  "bytes",
+ "helioscope-common",
  "http-body-util",
  "hyper",
  "hyper-util",
@@ -497,13 +498,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "helioscope-common"
+version = "0.1.0"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "helioscope-node"
 version = "0.1.0"
 dependencies = [
  "argh",
+ "bytes",
+ "helioscope-common",
+ "hyper",
+ "hyper-util",
  "serde",
+ "serde_json",
  "sysinfo",
  "time",
+ "tokio",
  "toml",
  "tracing",
  "tracing-subscriber",

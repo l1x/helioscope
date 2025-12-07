@@ -1,10 +1,10 @@
+use helioscope_common::ProbeDataPoint;
 use sqlx::{Acquire, SqliteConnection};
 use tokio::sync::mpsc;
 use tracing::{debug, error, info, warn};
 
 use crate::store::db::Database;
 use crate::store::errors::StoreError;
-use crate::store::models::ProbeDataPoint;
 
 const CHANNEL_BUFFER_SIZE: usize = 1000;
 

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::store::models::ProbeDataPoint;
+use helioscope_common::ProbeDataPoint;
 
 /// Request payload for probe data submission
 #[derive(Debug, Deserialize)]
