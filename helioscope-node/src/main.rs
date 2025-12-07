@@ -83,7 +83,8 @@ fn main() {
     sys.refresh_all();
 
     if config.probes.sysinfo.cpu {
-        cpu::probe_cpu(&sys);
+        let cpu_data = cpu::probe_cpu(&sys, &config.node_id);
+        debug!("{:?}", cpu_data);
     }
 
     if config.probes.sysinfo.memory {
