@@ -9,7 +9,7 @@ members = [
 version = "0.1.0"
 edition = "2024"
 description = "A lightweight system monitoring tool with node agents and collector"
-repository = ""
+repository = "https://github.com/l1x/helioscope"
 license = "AGPL-3.0"
 
 [workspace.dependencies]

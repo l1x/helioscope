@@ -75,7 +75,7 @@ fn main() {
     debug!("Args: {:?}", argz);
     info!("Config file is read from: {}", argz.config_file);
 
-    let config = Config::load("helioscope.toml").expect("Failed to load helioscope.toml");
+    let config = Config::load(&argz.config_file).expect("Failed to load helioscope.toml");
 
     debug!("Config: {:?}", config);
 

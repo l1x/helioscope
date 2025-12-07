@@ -1,31 +1,34 @@
 use argh::FromArgs;
-use serde::Deserialize;
-use std::fs;
 use time::macros::format_description;
 use tracing::{debug, info};
 use tracing_subscriber::fmt::time::UtcTime;
 
-fn default_config_file() -> String {
-    String::from("helioscope-collector.toml")
+fn default_host() -> String {
+    String::from("localhost")
 }
 
+fn default_port() -> String {
+    String::from("8080")
+}
+
+fn default_data_dir() -> String {
+    String::from("data")
+}
 #[derive(FromArgs, Debug)]
 #[argh(description = "A brief description of what your program does.")]
 #[argh(help_triggers("-h", "--help", "help"))]
 pub struct Argz {
-    /// config file location
-    #[argh(option, default = "default_config_file()")]
-    config_file: String,
-}
+    /// hostname or ip
+    #[argh(option, short = 'h', default = "default_host()")]
+    host: String,
 
-#[derive(Debug, Deserialize)]
-pub struct Config {}
+    /// port
+    #[argh(option, short = 'p', default = "default_port()")]
+    port: String,
 
-impl Config {
-    pub fn load(path: &str) -> Result<Self, Box<dyn std::error::Error>> {
-        let content = fs::read_to_string(path)?;
-        Ok(toml::from_str(&content)?)
-    }
+    /// data_dir
+    #[argh(option, short = 'd', default = "default_data_dir()")]
+    data_dir: String,
 }
 
 fn main() {
@@ -47,9 +50,7 @@ fn main() {
 
     let argz: Argz = argh::from_env();
     debug!("Args: {:?}", argz);
-    info!("Config file is read from: {}", argz.config_file);
 
-    let config = Config::load("helioscope.toml").expect("Failed to load helioscope.toml");
-
-    debug!("Config: {:?}", config);
+    info!("Going to listen on {}:{}", argz.host, argz.port);
+    info!("Saving data to {}", argz.data_dir);
 }
