@@ -4,7 +4,6 @@ use std::fs;
 use sysinfo::System;
 use time::macros::format_description;
 use tracing::{debug, info};
-use tracing_subscriber;
 use tracing_subscriber::fmt::time::UtcTime;
 
 use crate::probes::sysinfo::{cpu, mem, temp};
