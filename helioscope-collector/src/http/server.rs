@@ -20,12 +20,17 @@ pub struct HttpServer {
 }
 
 impl HttpServer {
-    pub fn new(host: &str, port: &str, writer: WriterHandle) -> Result<Self, StoreError> {
+    pub fn new(
+        host: &str,
+        port: &str,
+        writer: WriterHandle,
+        data_dir: String,
+    ) -> Result<Self, StoreError> {
         let addr: SocketAddr = format!("{}:{}", host, port)
             .parse()
             .map_err(|e| StoreError::InvalidQuery(format!("Invalid address: {}", e)))?;
 
-        let state = Arc::new(ServerState { writer });
+        let state = Arc::new(ServerState { writer, data_dir });
 
         Ok(Self { addr, state })
     }
@@ -73,12 +78,43 @@ async fn handle_request(
         req.uri()
     );
 
-    let response = match (req.method(), req.uri().path()) {
-        (&Method::POST, "/api/v1/probe") => handlers::handle_probe_data(req, state).await,
+    let path = req.uri().path();
+    let response = match (req.method(), path) {
+        (&Method::POST, "/api/v1/probe") => handlers::handle_probe_data(req, state.clone()).await,
         (&Method::GET, "/health") => handlers::handle_health().await,
-        (&Method::GET, "/ui") => super::ui::handle_ui_home().await,
+        (&Method::GET, "/ui") => super::ui::handle_ui_home(&state.data_dir).await,
+        (&Method::GET, _) if path.starts_with("/ui/node/") => {
+            handle_node_chart_request(path, &state.data_dir).await
+        }
         _ => handlers::handle_not_found().await,
     };
 
     Ok(response)
+}
+
+async fn handle_node_chart_request(
+    path: &str,
+    data_dir: &str,
+) -> Response<BoxBody<Bytes, hyper::Error>> {
+    // Parse path: /ui/node/{node_id}/{chart_type}.svg
+    let parts: Vec<&str> = path.split('/').collect();
+
+    if parts.len() < 5 {
+        return handlers::handle_not_found().await;
+    }
+
+    let node_id = parts[3];
+    let chart_file = parts[4];
+
+    // Parse hours from query string (default to 24)
+    let hours = 24u32; // TODO: parse from query params
+
+    match chart_file {
+        "cpu.svg" => super::charts::handle_cpu_chart(node_id, hours, data_dir).await,
+        "memory.svg" => super::charts::handle_memory_chart(node_id, hours, data_dir).await,
+        "temperature.svg" => {
+            super::charts::handle_temperature_chart(node_id, hours, data_dir).await
+        }
+        _ => handlers::handle_not_found().await,
+    }
 }

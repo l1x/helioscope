@@ -2,8 +2,8 @@
 # Replace it with a uuid or similar
 # that is node unique. It is used for the
 # metrics collection
-node_id = "d6f0a1c9-a494-4567-8f8d-091cc532c875"
-metrics_collector_addr = "hostname:port"
+node_id = "2fd75b6b-cd46-4cae-ba93-30a66ee4fcd4"
+metrics_collector_addr = "localhost:8080"
 collection_interval_secs = 60
 
 [probes.sysinfo]

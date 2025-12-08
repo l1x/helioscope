@@ -13,6 +13,7 @@ type BoxBody = http_body_util::combinators::BoxBody<Bytes, hyper::Error>;
 
 pub struct ServerState {
     pub writer: WriterHandle,
+    pub data_dir: String,
 }
 
 pub async fn handle_probe_data(

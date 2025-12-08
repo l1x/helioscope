@@ -73,7 +73,12 @@ async fn main() {
     });
 
     // Create and run HTTP server
-    let server = match http::server::HttpServer::new(&argz.host, &argz.port, writer_handle) {
+    let server = match http::server::HttpServer::new(
+        &argz.host,
+        &argz.port,
+        writer_handle,
+        argz.data_dir.clone(),
+    ) {
         Ok(s) => s,
         Err(e) => {
             error!("Failed to create HTTP server: {}", e);
