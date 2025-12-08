@@ -42,3 +42,83 @@ where
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::Arc;
+    use std::sync::atomic::{AtomicU32, Ordering};
+
+    #[tokio::test]
+    async fn test_succeeds_first_try() {
+        let result = send_with_retry(|| async { Ok(()) }, 3).await;
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn test_succeeds_after_retries() {
+        let counter = Arc::new(AtomicU32::new(0));
+        let counter_clone = Arc::clone(&counter);
+
+        let result = send_with_retry(
+            move || {
+                let c = Arc::clone(&counter_clone);
+                async move {
+                    let count = c.fetch_add(1, Ordering::SeqCst);
+                    if count < 2 {
+                        Err(ClientError::Http("temporary failure".to_string()))
+                    } else {
+                        Ok(())
+                    }
+                }
+            },
+            5,
+        )
+        .await;
+
+        assert!(result.is_ok());
+        assert_eq!(counter.load(Ordering::SeqCst), 3);
+    }
+
+    #[tokio::test]
+    async fn test_fails_after_max_retries() {
+        let counter = Arc::new(AtomicU32::new(0));
+        let counter_clone = Arc::clone(&counter);
+
+        let result = send_with_retry(
+            move || {
+                let c = Arc::clone(&counter_clone);
+                async move {
+                    c.fetch_add(1, Ordering::SeqCst);
+                    Err(ClientError::Http("permanent failure".to_string()))
+                }
+            },
+            3,
+        )
+        .await;
+
+        assert!(result.is_err());
+        assert_eq!(counter.load(Ordering::SeqCst), 3);
+    }
+
+    #[tokio::test]
+    async fn test_respects_max_retries() {
+        let counter = Arc::new(AtomicU32::new(0));
+        let counter_clone = Arc::clone(&counter);
+
+        let _result = send_with_retry(
+            move || {
+                let c = Arc::clone(&counter_clone);
+                async move {
+                    c.fetch_add(1, Ordering::SeqCst);
+                    Err(ClientError::Http("always fails".to_string()))
+                }
+            },
+            5,
+        )
+        .await;
+
+        // Should attempt exactly max_retries times
+        assert_eq!(counter.load(Ordering::SeqCst), 5);
+    }
+}
