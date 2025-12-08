@@ -1,3 +1,5 @@
+// src/main.rs
+
 use argh::FromArgs;
 use time::macros::format_description;
 use tracing::{debug, error, info};
@@ -72,11 +74,22 @@ async fn main() {
         writer_service.run().await;
     });
 
+    // Initialize reader pool
+    let reader_pool = match store::reader::ReaderPool::new(&argz.data_dir).await {
+        Ok(pool) => pool,
+        Err(e) => {
+            error!("Failed to initialize reader pool: {}", e);
+            std::process::exit(1);
+        }
+    };
+    info!("Reader pool initialized");
+
     // Create and run HTTP server
     let server = match http::server::HttpServer::new(
         &argz.host,
         &argz.port,
         writer_handle,
+        reader_pool,
         argz.data_dir.clone(),
     ) {
         Ok(s) => s,
@@ -85,7 +98,6 @@ async fn main() {
             std::process::exit(1);
         }
     };
-
     info!("Listening on {}:{}", argz.host, argz.port);
     info!("Data directory: {}", argz.data_dir);
 
