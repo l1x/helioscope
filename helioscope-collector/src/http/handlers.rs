@@ -5,7 +5,8 @@ use hyper::{Request, Response, StatusCode};
 use std::sync::Arc;
 use tracing::{debug, error};
 
-use super::types::{ErrorResponse, ProbeDataBatch, SuccessResponse};
+use super::types::{ErrorResponse, HealthResponse, ProbeDataBatch, SuccessResponse};
+use crate::http::validate::{max_request_size, validate_request_size};
 use crate::store::writer::WriterHandle;
 
 type BoxBody = http_body_util::combinators::BoxBody<Bytes, hyper::Error>;
@@ -25,6 +26,11 @@ pub async fn handle_probe_data(
             return error_response(StatusCode::BAD_REQUEST, "Failed to read body");
         }
     };
+
+    if let Err(e) = validate_request_size(whole_body.len()) {
+        error!("Request size validation failed: {}", e);
+        return error_response(StatusCode::PAYLOAD_TOO_LARGE, &e.to_string());
+    }
 
     let batch: ProbeDataBatch = match serde_json::from_slice(&whole_body) {
         Ok(b) => b,
@@ -52,8 +58,10 @@ pub async fn handle_probe_data(
 pub async fn handle_health() -> Response<BoxBody> {
     json_response(
         StatusCode::OK,
-        &SuccessResponse {
+        &HealthResponse {
             status: "healthy".to_string(),
+            version: env!("CARGO_PKG_VERSION").to_string(),
+            max_request_size_bytes: max_request_size(),
         },
     )
 }

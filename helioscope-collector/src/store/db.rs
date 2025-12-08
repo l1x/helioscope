@@ -1,3 +1,4 @@
+// helioscope-collector/src/store/db.rs
 use sqlx::Connection;
 use sqlx::sqlite::{SqliteConnectOptions, SqliteConnection};
 use std::path::Path;
@@ -29,11 +30,13 @@ pub struct Database {
 }
 
 impl Database {
-    /// Initialize a new database connection and create schema if needed
-    pub async fn new(data_dir: &str) -> Result<Self, StoreError> {
+    /// Initialize a new database connection for a specific date
+    /// Creates: data/helioscope_2024-12-08.db
+    pub async fn new_for_date(data_dir: &str, date: &str) -> Result<Self, StoreError> {
         std::fs::create_dir_all(data_dir)?;
 
-        let db_path = Path::new(data_dir).join("helioscope.db");
+        let db_filename = format!("helioscope_{}.db", date);
+        let db_path = Path::new(data_dir).join(&db_filename);
         let db_url = format!("sqlite://{}", db_path.display());
 
         info!("Initializing database at: {}", db_url);
@@ -47,7 +50,7 @@ impl Database {
         debug!("Running database migrations");
         sqlx::query(SCHEMA).execute(&mut conn).await?;
 
-        info!("Database initialized successfully");
+        info!("Database initialized successfully: {}", db_filename);
 
         Ok(Self { conn })
     }

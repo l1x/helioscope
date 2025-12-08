@@ -1,5 +1,7 @@
+// helioscope-collector/src/store/writer.rs
 use helioscope_common::ProbeDataPoint;
 use sqlx::{Acquire, SqliteConnection};
+use time::OffsetDateTime;
 use tokio::sync::mpsc;
 use tracing::{debug, error, info, warn};
 
@@ -44,15 +46,23 @@ impl WriterHandle {
 pub struct WriterService {
     db: Database,
     rx: mpsc::Receiver<WriteCommand>,
+    current_date: String,
+    data_dir: String,
 }
 
 impl WriterService {
     /// Create a new writer service and return a handle for sending commands
     pub async fn new(data_dir: &str) -> Result<(Self, WriterHandle), StoreError> {
-        let db = Database::new(data_dir).await?;
+        let current_date = get_current_utc_date();
+        let db = Database::new_for_date(data_dir, &current_date).await?;
         let (tx, rx) = mpsc::channel(CHANNEL_BUFFER_SIZE);
 
-        let service = Self { db, rx };
+        let service = Self {
+            db,
+            rx,
+            current_date,
+            data_dir: data_dir.to_string(),
+        };
         let handle = WriterHandle { tx };
 
         Ok((service, handle))
@@ -90,6 +100,16 @@ impl WriterService {
         let count = data.len();
         debug!("Processing insert batch of {} items", count);
 
+        // Check if date has changed (UTC midnight rotation)
+        let today = get_current_utc_date();
+        if today != self.current_date {
+            info!(
+                "Date changed: {} -> {}, rotating database",
+                self.current_date, today
+            );
+            self.rotate_database(&today).await?;
+        }
+
         let inserted = insert_batch(self.db.conn(), &data).await?;
 
         if inserted != count as u64 {
@@ -98,6 +118,25 @@ impl WriterService {
                 count, inserted
             );
         }
+
+        Ok(())
+    }
+
+    async fn rotate_database(&mut self, new_date: &str) -> Result<(), StoreError> {
+        info!("Closing database for date: {}", self.current_date);
+
+        // Close the old database connection
+        let old_db = std::mem::replace(
+            &mut self.db,
+            Database::new_for_date(&self.data_dir, new_date).await?,
+        );
+
+        if let Err(e) = old_db.close().await {
+            warn!("Error closing old database: {}", e);
+        }
+
+        self.current_date = new_date.to_string();
+        info!("Database rotation complete, now using: {}", new_date);
 
         Ok(())
     }
@@ -159,4 +198,15 @@ async fn insert_batch(
 
     debug!("Successfully inserted {} probe data points", count);
     Ok(count)
+}
+
+/// Get current UTC date in YYYY-MM-DD format
+fn get_current_utc_date() -> String {
+    let now = OffsetDateTime::now_utc();
+    format!(
+        "{:04}-{:02}-{:02}",
+        now.year(),
+        u8::from(now.month()),
+        now.day()
+    )
 }
