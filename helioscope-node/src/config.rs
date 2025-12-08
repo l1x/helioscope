@@ -30,6 +30,6 @@ pub struct SysinfoProbes {
 impl Config {
     pub fn load(path: &str) -> Result<Self, Box<dyn std::error::Error>> {
         let content = fs::read_to_string(path)?;
-        Ok(toml::from_str(&content)?)
+        Ok(basic_toml::from_str(&content)?)
     }
 }

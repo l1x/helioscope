@@ -7,7 +7,7 @@ members = [
 ]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 description = "A lightweight system monitoring tool with node agents and collector"
 repository = "https://github.com/l1x/helioscope"
@@ -15,13 +15,17 @@ license = "AGPL-3.0"
 
 [workspace.dependencies]
 argh = { version = "0.1" }
+basic-toml = { version = "0.1" }
 helioscope-common = { path = "../helioscope-common" }
 serde = { version = "1.0", features = ["derive"] }
 thiserror = { version = "2" }
 time = { version = "0.3", features = ["formatting", "macros"] }
-toml = { version = "0.8" }
 tracing = { version = "0.1" }
-tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "time"] }
+tracing-subscriber = { version = "0.3", default-features = false, features = [
+  "env-filter",
+  "fmt",
+  "time"
+] }
 
 [profile.bench]
 lto = "thin"

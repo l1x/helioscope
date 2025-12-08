@@ -8,6 +8,7 @@ license.workspace = true
 
 [dependencies]
 argh.workspace = true
+basic-toml.workspace = true
 bytes = { version = "1.0" }
 helioscope-common = { path = "../helioscope-common" }
 http-body-util = { version = "0.1" }
@@ -18,6 +19,5 @@ serde_json = { version = "1" }
 sysinfo = { version = "0.37" }
 time.workspace = true
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
-toml.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
