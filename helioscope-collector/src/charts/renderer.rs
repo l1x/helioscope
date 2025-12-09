@@ -126,7 +126,7 @@ impl SvgRenderer {
                             .map(|w| {
                                 PathElement::new(
                                     vec![(w[0].0, w[0].1), (w[1].0, w[1].1)],
-                                    color.stroke_width(2),
+                                    color.stroke_width(1),
                                 )
                             }),
                     )
