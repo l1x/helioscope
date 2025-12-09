@@ -1,0 +1,14 @@
+[build]
+# Increase incremental compilation (helps with C deps)
+incremental = true
+
+# Use all CPU cores for compilation
+jobs = 8
+
+[target.x86_64-apple-darwin]
+# Use system SQLite on macOS
+rustflags = ["-C", "link-arg=-L/usr/lib"]
+
+[target.aarch64-apple-darwin]
+# Use system SQLite on Apple Silicon
+rustflags = ["-C", "link-arg=-L/opt/homebrew/lib"]
