@@ -88,18 +88,30 @@ Helioscope outputs structured JSON logs with UTC timestamps:
 
 ```
 helioscope/
-├── src/
-│   ├── main.rs              # Main application entry point
-│   ├── probes/
-│   │   ├── mod.rs           # Probe module declarations
-│   │   └── sysinfo/
-│   │       ├── mod.rs       # Sysinfo probe module
-│   │       ├── cpu.rs       # CPU monitoring implementation
-│   │       ├── mem.rs       # Memory monitoring implementation
-│   │       └── temp.rs      # Temperature monitoring implementation
-├── Cargo.toml              # Rust dependencies and metadata
-├── helioscope.toml         # Configuration file
-└── LICENSE                 # AGPL v3 license
+├── helioscope-common/      # Shared library and data structures
+│   └── src/lib.rs
+├── helioscope-node/        # Node agent
+│   ├── src/
+│   │   ├── main.rs          # Main entry point
+│   │   ├── client/          # HTTP client for sending metrics
+│   │   ├── probes/          # Monitoring probes
+│   │   │   └── sysinfo/     # System information probes
+│   │   │       ├── cpu.rs    # CPU monitoring
+│   │   │       ├── mem.rs    # Memory monitoring
+│   │   │       ├── temp.rs   # Temperature monitoring
+│   │   │       └── statik.rs # Static system info
+│   │   ├── config.rs        # Configuration loading
+│   │   └── utils/           # Utility functions
+│   └── helioscope-node.toml # Example configuration
+├── helioscope-collector/   # Collector server
+│   ├── src/
+│   │   ├── main.rs          # Main entry point
+│   │   ├── http/            # HTTP server and API
+│   │   ├── store/           # Data storage
+│   │   └── charts/          # Chart rendering
+│   └── helioscope-collector.toml # Example configuration
+├── Cargo.toml              # Workspace configuration
+└── README.md               # Project documentation
 ```
 
 ## Dependencies
@@ -179,20 +191,23 @@ Contributions are welcome! Please feel free to submit pull requests or open issu
 
 ## Roadmap
 
-### Client
+### Node Agent
 
 - [ ] Disk usage monitoring
 - [ ] Network interface statistics
 - [ ] Process monitoring
-- [ ] GPU information
+- [ ] GPU information (where available)
 - [ ] Battery status (for laptops)
-- [ ] Sending
 
 ### Collector
 
-- [ ] Collector API (probably HTTP)
-- [ ] Storing metrics as a time series
-- [ ] Cloud backup for every hour (configurable)
+- [x] Collector HTTP API ✓
+- [x] Storing metrics as time series ✓
+- [x] Basic web dashboard with charting ✓
+- [ ] Advanced query interface
+- [ ] Data aggregation and rollups
+- [ ] Alerting and notifications
+- [ ] Cloud backup functionality
 
 ## Support
 
