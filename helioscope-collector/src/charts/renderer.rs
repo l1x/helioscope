@@ -80,7 +80,23 @@ impl SvgRenderer {
 
             // Configure mesh (grid)
             let mut mesh = chart.configure_mesh();
-            mesh.x_desc(&data.x_label).y_desc(&data.y_label);
+            mesh.x_desc(&data.x_label)
+                .y_desc(&data.y_label)
+                .x_label_formatter(&|x| {
+                    // Convert Unix timestamp to UTC date string
+                    if let Ok(dt) = time::OffsetDateTime::from_unix_timestamp(*x) {
+                        format!(
+                            "{:04}-{:02}-{:02}\n{:02}:{:02}",
+                            dt.year(),
+                            dt.month() as u8,
+                            dt.day(),
+                            dt.hour(),
+                            dt.minute()
+                        )
+                    } else {
+                        x.to_string()
+                    }
+                });
 
             if self.config.show_grid {
                 mesh.draw()
