@@ -1,10 +1,11 @@
-# Configuration for /etc/init.d/<SERVICE>
+# Configuration for /etc/init.d/ferrview-node
 
-# User (and group) to run <SERVICE> as.
-#command_user="<USER>[:<GROUP>]"
+# User (and group) to run ferrview-node as.
+#command_user="ferrview:ferrview"
 
-# Additional arguments for <SERVICE> daemon.
-#command_args=
+# Additional arguments for ferrview-node daemon.
+# By default, ferrview-node looks for its config at /etc/ferrview/ferrview-node.toml
+#command_args="--config /etc/ferrview/ferrview-node.toml"
 
 # Comment out to disable process supervisor.
 supervisor=supervise-daemon

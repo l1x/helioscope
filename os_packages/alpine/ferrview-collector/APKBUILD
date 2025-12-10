@@ -1,43 +1,50 @@
 # Contributor:
 # Maintainer:
 pkgname=ferrview-collector
-pkgver=
+pkgver=0.3.0
 pkgrel=0
-pkgdesc=""
-url=""
+pkgdesc="A lightweight system monitoring collector - collector server component"
+url="https://github.com/l1x/ferrview"
 arch="all"
-license=""
-depends=""
-makedepends=""
+license="AGPL-3.0"
+depends="sqlite-libs"
+makedepends="cargo cargo-auditable sqlite-dev"
 checkdepends=""
 install="$pkgname.pre-install $pkgname.post-install"
-subpackages="$pkgname-dev $pkgname-doc"
+subpackages="$pkgname-openrc"
 source="
+	$pkgname-$pkgver.tar.gz::https://github.com/l1x/ferrview/archive/refs/tags/v$pkgver.tar.gz
 	ferrview-collector.initd
 	ferrview-collector.confd
 	"
-builddir="$srcdir/"
+builddir="$srcdir/ferrview-$pkgver"
+options="net" # needed for cargo to fetch dependencies
 
 build() {
-	# Replace with proper build command(s).
-	# Remove if there is no build command.
-	:
+	cargo auditable build --release --locked \
+		--package ferrview-collector
 }
 
 check() {
-	# Replace with proper check command(s).
-	# Remove and add !check option if there is no check command.
-	:
+	cargo test --release --locked \
+		--package ferrview-collector
 }
 
 package() {
-	# Replace with proper package command(s)
-	:
+	install -Dm755 target/release/ferrview-collector \
+		"$pkgdir"/usr/sbin/ferrview-collector
 
-	install -m755 -D "$srcdir"/$pkgname.initd \
-		"$pkgdir"/etc/init.d/$pkgname
-	install -m644 -D "$srcdir"/$pkgname.confd \
-		"$pkgdir"/etc/conf.d/$pkgname
+	install -m755 -D "$srcdir"/ferrview-collector.initd \
+		"$pkgdir"/etc/init.d/ferrview-collector
+	install -m644 -D "$srcdir"/ferrview-collector.confd \
+		"$pkgdir"/etc/conf.d/ferrview-collector
+
+	install -dm755 "$pkgdir"/etc/ferrview
+	install -Dm644 ferrview-collector/ferrview-collector.toml \
+		"$pkgdir"/etc/ferrview/ferrview-collector.toml.example
+
+	install -dm750 -o ferrview -g ferrview \
+		"$pkgdir"/var/lib/ferrview
 }
 
 sha512sums="

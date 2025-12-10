@@ -1,4 +1,27 @@
 #!/bin/sh
 
-# add something which happens after install
+cat <<EOF
 
+*
+* Ferrview Node has been installed successfully.
+*
+* To get started:
+*
+*   1. Copy the example configuration:
+*      cp /etc/ferrview/ferrview-node.toml.example \\
+*         /etc/ferrview/ferrview-node.toml
+*
+*   2. Edit the configuration file to set your collector address:
+*      vi /etc/ferrview/ferrview-node.toml
+*
+*   3. Enable and start the service:
+*      rc-update add ferrview-node default
+*      rc-service ferrview-node start
+*
+* Logs are available at:
+*   - /var/log/ferrview-node.log
+*   - /var/log/ferrview-node.err
+*
+EOF
+
+exit 0

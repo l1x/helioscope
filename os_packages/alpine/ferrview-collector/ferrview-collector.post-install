@@ -1,4 +1,29 @@
 #!/bin/sh
 
-# add something which happens after install
+cat <<EOF
 
+*
+* Ferrview Collector has been installed successfully.
+*
+* To get started:
+*
+*   1. Copy the example configuration:
+*      cp /etc/ferrview/ferrview-collector.toml.example \\
+*         /etc/ferrview/ferrview-collector.toml
+*
+*   2. Edit the configuration file:
+*      vi /etc/ferrview/ferrview-collector.toml
+*
+*   3. Enable and start the service:
+*      rc-update add ferrview-collector default
+*      rc-service ferrview-collector start
+*
+* Logs are available at:
+*   - /var/log/ferrview-collector.log
+*   - /var/log/ferrview-collector.err
+*
+* Data will be stored in: /var/lib/ferrview
+*
+EOF
+
+exit 0

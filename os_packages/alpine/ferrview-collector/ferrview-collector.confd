@@ -1,10 +1,11 @@
-# Configuration for /etc/init.d/<SERVICE>
+# Configuration for /etc/init.d/ferrview-collector
 
-# User (and group) to run <SERVICE> as.
-#command_user="<USER>[:<GROUP>]"
+# User (and group) to run ferrview-collector as.
+#command_user="ferrview:ferrview"
 
-# Additional arguments for <SERVICE> daemon.
-#command_args=
+# Additional arguments for ferrview-collector daemon.
+# By default, ferrview-collector looks for its config at /etc/ferrview/ferrview-collector.toml
+#command_args="--config /etc/ferrview/ferrview-collector.toml"
 
 # Comment out to disable process supervisor.
 supervisor=supervise-daemon

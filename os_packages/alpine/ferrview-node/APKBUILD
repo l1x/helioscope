@@ -1,43 +1,47 @@
 # Contributor:
 # Maintainer:
 pkgname=ferrview-node
-pkgver=
+pkgver=0.3.0
 pkgrel=0
-pkgdesc=""
-url=""
+pkgdesc="A lightweight system monitoring collector - node agent component"
+url="https://github.com/l1x/ferrview"
 arch="all"
-license=""
+license="AGPL-3.0"
 depends=""
-makedepends=""
+makedepends="cargo cargo-auditable"
 checkdepends=""
 install="$pkgname.pre-install $pkgname.post-install"
-subpackages="$pkgname-dev $pkgname-doc"
+subpackages="$pkgname-openrc"
 source="
+	$pkgname-$pkgver.tar.gz::https://github.com/l1x/ferrview/archive/refs/tags/v$pkgver.tar.gz
 	ferrview-node.initd
 	ferrview-node.confd
 	"
-builddir="$srcdir/"
+builddir="$srcdir/ferrview-$pkgver"
+options="net" # needed for cargo to fetch dependencies
 
 build() {
-	# Replace with proper build command(s).
-	# Remove if there is no build command.
-	:
+	cargo auditable build --release --locked \
+		--package ferrview-node
 }
 
 check() {
-	# Replace with proper check command(s).
-	# Remove and add !check option if there is no check command.
-	:
+	cargo test --release --locked \
+		--package ferrview-node
 }
 
 package() {
-	# Replace with proper package command(s)
-	:
+	install -Dm755 target/release/ferrview-node \
+		"$pkgdir"/usr/sbin/ferrview-node
 
-	install -m755 -D "$srcdir"/$pkgname.initd \
-		"$pkgdir"/etc/init.d/$pkgname
-	install -m644 -D "$srcdir"/$pkgname.confd \
-		"$pkgdir"/etc/conf.d/$pkgname
+	install -m755 -D "$srcdir"/ferrview-node.initd \
+		"$pkgdir"/etc/init.d/ferrview-node
+	install -m644 -D "$srcdir"/ferrview-node.confd \
+		"$pkgdir"/etc/conf.d/ferrview-node
+
+	install -dm755 "$pkgdir"/etc/ferrview
+	install -Dm644 ferrview-node/ferrview-node.toml \
+		"$pkgdir"/etc/ferrview/ferrview-node.toml.example
 }
 
 sha512sums="

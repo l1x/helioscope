@@ -1,14 +1,20 @@
 #!/sbin/openrc-run
 
-name="SampleService"
-description="Sample init.d file for Alpine Linux"
+name="ferrview-node"
+description="Ferrview Node - System monitoring metrics collection agent"
 
-: "${command_user:="<USER>"}"
+: "${command_user:="ferrview"}"
 
-command="/usr/sbin/<SERVICE>"
-: "${command_args:="--default-args"}"
+command="/usr/sbin/ferrview-node"
+: "${command_args:=""}"
 command_background="yes"
 pidfile="/run/$RC_SVCNAME.pid"
+output_log="/var/log/$RC_SVCNAME.log"
+error_log="/var/log/$RC_SVCNAME.err"
+
+start_pre() {
+	checkpath --file --mode 0640 --owner "$command_user" "$output_log" "$error_log"
+}
 
 depend() {
 	need net
