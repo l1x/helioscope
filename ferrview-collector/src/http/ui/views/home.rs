@@ -15,8 +15,7 @@ pub fn render(nodes: &[NodeSummary]) -> String {
         r#"        <header>
             <div class="header-content">
                 <div class="header-left">
-                    <h1>Ferrview</h1>
-                    <p class="subtitle">System Monitoring</p>
+                    <h1>ferrview #</h1>
                 </div>
                 <div class="header-right">
                     {}
