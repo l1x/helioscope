@@ -8,7 +8,10 @@ use crate::{
     client::http::HttpClient,
     client::retry::send_with_retry,
     config::Config,
-    probes::sysinfo::{cpu, disk, mem, network, statik, temp},
+    probes::{
+        procfs,
+        sysinfo::{cpu, disk, mem, network, statik, temp},
+    },
     utils::timestamp::get_utc_formatter,
 };
 
@@ -115,6 +118,16 @@ async fn main() {
             let network_data = network::probe_networks(&mut networks, &config.node_id);
             debug!("Collected {} network metrics", network_data.len());
             all_data.extend(network_data);
+        }
+
+        if config.probes.procfs.forks {
+            match procfs::forks::probe_forks(&config.node_id) {
+                Ok(forks_data) => {
+                    debug!("Collected {} fork metrics", forks_data.len());
+                    all_data.extend(forks_data);
+                }
+                Err(e) => error!("Failed to collect fork metrics: {}", e),
+            }
         }
 
         info!("Collected {} total metrics", all_data.len());

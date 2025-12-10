@@ -18,6 +18,8 @@ fn default_collection_interval() -> u64 {
 #[derive(Debug, Deserialize)]
 pub struct ProbesConfig {
     pub sysinfo: SysinfoProbes,
+    #[serde(default)]
+    pub procfs: ProcfsProbes,
 }
 
 #[derive(Debug, Deserialize)]
@@ -30,6 +32,12 @@ pub struct SysinfoProbes {
     pub disk: bool,
     #[serde(default)]
     pub network: bool,
+}
+
+#[derive(Debug, Deserialize, Default)]
+pub struct ProcfsProbes {
+    #[serde(default)]
+    pub forks: bool,
 }
 
 impl Config {
