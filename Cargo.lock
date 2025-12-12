@@ -339,7 +339,7 @@ dependencies = [
 
 [[package]]
 name = "ferrview-collector"
-version = "0.3.0"
+version = "0.5.0"
 dependencies = [
  "argh",
  "askama",
@@ -362,7 +362,7 @@ dependencies = [
 
 [[package]]
 name = "ferrview-common"
-version = "0.3.0"
+version = "0.5.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -370,7 +370,7 @@ dependencies = [
 
 [[package]]
 name = "ferrview-node"
-version = "0.3.0"
+version = "0.5.0"
 dependencies = [
  "argh",
  "basic-toml",

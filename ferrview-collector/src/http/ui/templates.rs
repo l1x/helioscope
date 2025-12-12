@@ -56,7 +56,6 @@ pub struct HomeTemplate<'a> {
 #[template(path = "node.html")]
 pub struct NodeTemplate<'a> {
     pub node: &'a NodeDetails,
-    pub short_id: &'a str,
     pub display_name: &'a str,
     pub version: &'a str,
 }

@@ -2,73 +2,203 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>{% block title %}{% endblock %} - Ferrview</title>
     <style>
 :root {
-    --bg-gradient-start: #ff6b35;
-    --bg-gradient-end: #f7931e;
-    --card-bg: white;
-    --text-primary: #2d3748;
-    --text-secondary: #718096;
-    --border-color: #e2e8f0;
-    --accent-color: #ff6b35;
-    --accent-hover: #e85a2a;
-    --secondary-bg: #f7fafc;
-    --secondary-hover: #edf2f7;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg-gradient-start: #1a202c;
-        --bg-gradient-end: #2d3748;
-        --card-bg: #2d3748;
-        --text-primary: #f7fafc;
-        --text-secondary: #cbd5e0;
-        --border-color: #4a5568;
-        --accent-color: #ff6b35;
-        --accent-hover: #ff8555;
-        --secondary-bg: #1a202c;
-        --secondary-hover: #374151;
-    }
+    --bg-primary: #1a1a1a;
+    --bg-card: #2a2a2a;
+    --bg-elevated: #333333;
+    --text-primary: #ffffff;
+    --text-secondary: #999999;
+    --text-muted: #666666;
+    --accent: #ff6b35;
+    --accent-hover: #ff8555;
+    --accent-soft: rgba(255, 107, 53, 0.15);
+    --separator: #444444;
+    --success: #4ade80;
+    --border-radius: 12px;
+    --border-radius-sm: 8px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    line-height: 1.6;
+    line-height: 1.5;
     color: var(--text-primary);
-    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    background: var(--bg-primary);
     min-height: 100vh;
-    padding: 40px 20px;
+    padding: 20px;
+    -webkit-font-smoothing: antialiased;
 }
 
-.container { max-width: 1200px; margin: 0 auto; }
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
 
+/* Buttons */
+.btn {
+    padding: 12px 20px;
+    border-radius: var(--border-radius-sm);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    cursor: pointer;
+    border: none;
+}
+.btn-primary {
+    background: var(--accent);
+    color: white;
+}
+.btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+.btn-secondary {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--separator);
+}
+.btn-secondary:hover {
+    background: var(--separator);
+}
+
+/* Metric Row - Horizontal metrics with separators */
+.metric-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.metric-row.wrap {
+    flex-wrap: wrap;
+    row-gap: 16px;
+}
+.metric-row.center {
+    justify-content: center;
+}
+
+/* Metric Item - Value above, label below */
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 50px;
+}
+.metric-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+.metric-value.small {
+    font-size: 1rem;
+}
+.metric-label {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+/* Vertical Separator */
+.separator {
+    width: 1px;
+    height: 28px;
+    background: var(--separator);
+    flex-shrink: 0;
+}
+
+/* Status Indicators */
+.status-active {
+    color: var(--success);
+}
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+/* Cards */
+.card {
+    background: var(--bg-card);
+    border-radius: var(--border-radius);
+    padding: 20px;
+}
+
+/* Back link */
+.back-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 16px;
+}
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
 footer {
     margin-top: 40px;
     text-align: center;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding-bottom: 20px;
 }
 
-.btn {
-    padding: 10px 16px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.9em;
-    transition: all 0.2s;
-    display: inline-block;
+/* Responsive: Mobile (iPhone 16 and similar) */
+@media (max-width: 430px) {
+    body {
+        padding: 12px;
+    }
+    .metric-row {
+        gap: 12px;
+    }
+    .metric-value {
+        font-size: 1.2rem;
+    }
+    .metric-label {
+        font-size: 0.65rem;
+    }
+    .separator {
+        height: 24px;
+    }
+    .btn {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
 }
-.btn-primary { background: var(--accent-color); color: white; }
-.btn-primary:hover { background: var(--accent-hover); }
-.btn-secondary {
-    background: var(--secondary-bg);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
+
+/* Responsive: Small phones */
+@media (max-width: 375px) {
+    .metric-row:not(.wrap) {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .separator {
+        display: none;
+    }
+    .metric-row:not(.wrap) .metric-item {
+        padding: 8px 12px;
+        background: var(--bg-elevated);
+        border-radius: var(--border-radius-sm);
+    }
 }
-.btn-secondary:hover { background: var(--secondary-hover); }
 
 {% block styles %}{% endblock %}
     </style>
@@ -77,7 +207,7 @@ footer {
     <div class="container">
 {% block content %}{% endblock %}
         <footer>
-            <p>Ferrview v{{ version }} | Built with Rust</p>
+            <p>Ferrview v{{ version }} | Built with Rust 🦀</p>
         </footer>
     </div>
 </body>

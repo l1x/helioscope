@@ -10,7 +10,6 @@ pub fn render(node: &NodeDetails) -> String {
 
     let template = NodeTemplate {
         node,
-        short_id: &short_id,
         display_name,
         version: env!("CARGO_PKG_VERSION"),
     };
